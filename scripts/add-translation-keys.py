@@ -439,6 +439,48 @@ UI_ENTRIES: list[tuple[str, dict[str, str]]] = [
         "ja": "ドラッグで幅調整・ダブルクリックでリセット",
         "ko": "드래그로 너비 조절 · 더블클릭으로 초기화",
     }),
+    ("examples", {
+        "en": "Examples",
+        "zh": "示例",
+        "zh-TW": "範例",
+        "ja": "サンプル",
+        "ko": "예제",
+    }),
+    ("examplesHeader", {
+        "en": "Bundled prompts & params",
+        "zh": "内建提示词与参数",
+        "zh-TW": "內建提示詞與參數",
+        "ja": "内蔵プロンプトとパラメータ",
+        "ko": "내장 프롬프트 및 파라미터",
+    }),
+    ("loadJson", {
+        "en": "Load JSON",
+        "zh": "载入 JSON",
+        "zh-TW": "載入 JSON",
+        "ja": "JSON 読込",
+        "ko": "JSON 불러오기",
+    }),
+    ("exportJson", {
+        "en": "Export JSON",
+        "zh": "导出 JSON",
+        "zh-TW": "匯出 JSON",
+        "ja": "JSON 書出",
+        "ko": "JSON 내보내기",
+    }),
+    ("loadJsonTooltip", {
+        "en": "Load a parameters JSON (compatible with ACE-Step Gradio examples).",
+        "zh": "载入参数 JSON 文件（兼容 ACE-Step Gradio 范例）。",
+        "zh-TW": "載入參數 JSON 檔（相容 ACE-Step Gradio 範例）。",
+        "ja": "パラメータ JSON を読み込みます（ACE-Step Gradio サンプル互換）。",
+        "ko": "파라미터 JSON 파일을 불러옵니다(ACE-Step Gradio 예제 호환).",
+    }),
+    ("exportJsonTooltip", {
+        "en": "Save current settings as JSON for sharing or reuse.",
+        "zh": "把当前设定存成 JSON，方便分享或重复使用。",
+        "zh-TW": "把目前設定存成 JSON，方便分享或重複使用。",
+        "ja": "現在の設定を JSON として保存（共有・再利用用）。",
+        "ko": "현재 설정을 JSON 으로 저장(공유·재사용용).",
+    }),
 ]
 
 ALL_ENTRIES = MODE_ENTRIES + HINT_ENTRIES + UI_ENTRIES

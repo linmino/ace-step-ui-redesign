@@ -11,6 +11,9 @@ import { AdvancedSection } from './create/sections/AdvancedSection';
 import { ModeTabs } from './create/ModeTabs';
 import { ModeIntroCard } from './create/ModeIntroCard';
 import { BasicProToggle, CreateTier } from './create/BasicProToggle';
+import { ExamplesMenu } from './create/ExamplesMenu';
+import { Tooltip } from './ui/Tooltip';
+import { Upload as UploadIcon, Download as DownloadIcon } from 'lucide-react';
 import { CreateMode, MODE_CONFIGS, DEFAULT_MODE } from '../config/createModeConfig';
 
 interface ReferenceTrack {
@@ -478,7 +481,86 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
     }
   };
 
-  // Load generation parameters from JSON file
+  // Apply a generation-parameters object to the form. Accepts BOTH the
+  // existing snake_case (key_scale, vocal_language, ...) and the official
+  // ACE-Step Gradio JSON layout (keyscale, language, caption, think, ...).
+  // Pulling this out of the file-input handler so the Examples menu can call
+  // it with a literal object.
+  const applyParamsObject = (raw: Record<string, unknown>) => {
+    const data = raw as Record<string, any>;
+    const pick = <T,>(...keys: string[]): T | undefined => {
+      for (const k of keys) if (data[k] !== undefined) return data[k] as T;
+      return undefined;
+    };
+
+    // Inputs
+    const lyricsVal = pick<string>('lyrics');
+    if (lyricsVal !== undefined) setLyrics(lyricsVal);
+    const styleVal = pick<string>('style', 'caption', 'description');
+    if (styleVal !== undefined) setStyle(styleVal);
+    const descriptionVal = pick<string>('description');
+    if (descriptionVal !== undefined) setSongDescription(descriptionVal);
+    const titleVal = pick<string>('title');
+    if (titleVal !== undefined) setTitle(titleVal);
+    const instrumentalVal = pick<boolean>('instrumental');
+    if (instrumentalVal !== undefined) setInstrumental(instrumentalVal);
+    const vocalLangVal = pick<string>('vocal_language', 'language');
+    if (vocalLangVal !== undefined) setVocalLanguage(vocalLangVal);
+
+    // Music params
+    const bpmVal = pick<number>('bpm');
+    if (bpmVal !== undefined) setBpm(bpmVal);
+    const keyScaleVal = pick<string>('key_scale', 'keyscale');
+    if (keyScaleVal !== undefined) setKeyScale(keyScaleVal);
+    const timeSigVal = pick<string | number>('time_signature', 'timesignature');
+    if (timeSigVal !== undefined) setTimeSignature(String(timeSigVal));
+    const durationVal = pick<number>('duration');
+    if (durationVal !== undefined) setDuration(durationVal);
+
+    // Generation core
+    const stepsVal = pick<number>('inference_steps', 'infer_step', 'inferenceSteps');
+    if (stepsVal !== undefined) setInferenceSteps(stepsVal);
+    const guidanceVal = pick<number>('guidance_scale', 'guidanceScale');
+    if (guidanceVal !== undefined) setGuidanceScale(guidanceVal);
+    const fmtVal = pick<'mp3' | 'flac'>('audio_format', 'audioFormat');
+    if (fmtVal !== undefined) setAudioFormat(fmtVal);
+    const inferMethodVal = pick<'ode' | 'sde'>('infer_method', 'inferMethod', 'scheduler_type');
+    if (inferMethodVal !== undefined) setInferMethod(inferMethodVal);
+    const seedVal = pick<number>('seed', 'manual_seeds');
+    if (seedVal !== undefined) { setSeed(seedVal); setRandomSeed(false); }
+    const shiftVal = pick<number>('shift');
+    if (shiftVal !== undefined) setShift(shiftVal);
+
+    // LM
+    const thinkVal = pick<boolean>('think', 'thinking');
+    if (thinkVal !== undefined) setThinking(thinkVal);
+    const lmTempVal = pick<number>('lm_temperature', 'lmTemperature');
+    if (lmTempVal !== undefined) setLmTemperature(lmTempVal);
+    const lmCfgVal = pick<number>('lm_cfg_scale', 'lmCfgScale');
+    if (lmCfgVal !== undefined) setLmCfgScale(lmCfgVal);
+    const lmTopKVal = pick<number>('lm_top_k', 'lmTopK');
+    if (lmTopKVal !== undefined) setLmTopK(lmTopKVal);
+    const lmTopPVal = pick<number>('lm_top_p', 'lmTopP');
+    if (lmTopPVal !== undefined) setLmTopP(lmTopPVal);
+    const lmNegVal = pick<string>('lm_negative_prompt', 'lmNegativePrompt');
+    if (lmNegVal !== undefined) setLmNegativePrompt(lmNegVal);
+
+    // Task / repaint / cover
+    const taskVal = pick<string>('task_type', 'taskType');
+    if (taskVal !== undefined) setTaskType(taskVal);
+    const codesVal = pick<string>('audio_codes', 'audioCodes');
+    if (codesVal !== undefined) setAudioCodes(codesVal);
+    const repaintStartVal = pick<number>('repainting_start', 'repaintingStart');
+    if (repaintStartVal !== undefined) setRepaintingStart(repaintStartVal);
+    const repaintEndVal = pick<number>('repainting_end', 'repaintingEnd');
+    if (repaintEndVal !== undefined) setRepaintingEnd(repaintEndVal);
+    const instructionVal = pick<string>('instruction');
+    if (instructionVal !== undefined) setInstruction(instructionVal);
+    const coverVal = pick<number>('audio_cover_strength', 'audioCoverStrength', 'remix_strength');
+    if (coverVal !== undefined) setAudioCoverStrength(coverVal);
+  };
+
+  // Load generation parameters from a user-selected JSON file.
   const handleLoadParamsFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -486,39 +568,66 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
     reader.onload = (ev) => {
       try {
         const data = JSON.parse(ev.target?.result as string);
-        if (data.lyrics !== undefined) setLyrics(data.lyrics);
-        if (data.style !== undefined) setStyle(data.style);
-        if (data.title !== undefined) setTitle(data.title);
-        if (data.caption !== undefined) setStyle(data.caption);
-        if (data.instrumental !== undefined) setInstrumental(data.instrumental);
-        if (data.vocal_language !== undefined) setVocalLanguage(data.vocal_language);
-        if (data.bpm !== undefined) setBpm(data.bpm);
-        if (data.key_scale !== undefined) setKeyScale(data.key_scale);
-        if (data.time_signature !== undefined) setTimeSignature(data.time_signature);
-        if (data.duration !== undefined) setDuration(data.duration);
-        if (data.inference_steps !== undefined) setInferenceSteps(data.inference_steps);
-        if (data.guidance_scale !== undefined) setGuidanceScale(data.guidance_scale);
-        if (data.audio_format !== undefined) setAudioFormat(data.audio_format);
-        if (data.infer_method !== undefined) setInferMethod(data.infer_method);
-        if (data.seed !== undefined) { setSeed(data.seed); setRandomSeed(false); }
-        if (data.shift !== undefined) setShift(data.shift);
-        if (data.lm_temperature !== undefined) setLmTemperature(data.lm_temperature);
-        if (data.lm_cfg_scale !== undefined) setLmCfgScale(data.lm_cfg_scale);
-        if (data.lm_top_k !== undefined) setLmTopK(data.lm_top_k);
-        if (data.lm_top_p !== undefined) setLmTopP(data.lm_top_p);
-        if (data.lm_negative_prompt !== undefined) setLmNegativePrompt(data.lm_negative_prompt);
-        if (data.task_type !== undefined) setTaskType(data.task_type);
-        if (data.audio_codes !== undefined) setAudioCodes(data.audio_codes);
-        if (data.repainting_start !== undefined) setRepaintingStart(data.repainting_start);
-        if (data.repainting_end !== undefined) setRepaintingEnd(data.repainting_end);
-        if (data.instruction !== undefined) setInstruction(data.instruction);
-        if (data.audio_cover_strength !== undefined) setAudioCoverStrength(data.audio_cover_strength);
+        applyParamsObject(data);
       } catch {
         console.error('Failed to parse parameters JSON');
       }
     };
     reader.readAsText(file);
-    e.target.value = ''; // reset so same file can be reloaded
+    e.target.value = '';
+  };
+
+  // Serialise current form state to JSON (snake_case for round-trip with
+  // ACE-Step backend / Gradio UI).
+  const exportParamsAsJson = () => {
+    const payload: Record<string, unknown> = {
+      // Inputs
+      ...(lyrics ? { lyrics } : {}),
+      ...(style ? { caption: style, style } : {}),
+      ...(songDescription ? { description: songDescription } : {}),
+      ...(title ? { title } : {}),
+      instrumental,
+      vocal_language: vocalLanguage,
+      // Music params
+      bpm,
+      key_scale: keyScale,
+      keyscale: keyScale,
+      time_signature: timeSignature,
+      timesignature: timeSignature,
+      duration,
+      // Generation core
+      inference_steps: inferenceSteps,
+      guidance_scale: guidanceScale,
+      audio_format: audioFormat,
+      infer_method: inferMethod,
+      seed: randomSeed ? -1 : seed,
+      shift,
+      // LM
+      think: thinking,
+      lm_temperature: lmTemperature,
+      lm_cfg_scale: lmCfgScale,
+      lm_top_k: lmTopK,
+      lm_top_p: lmTopP,
+      lm_negative_prompt: lmNegativePrompt,
+      // Task / repaint / cover
+      task_type: taskType,
+      ...(audioCodes ? { audio_codes: audioCodes } : {}),
+      repainting_start: repaintingStart,
+      repainting_end: repaintingEnd,
+      ...(instruction ? { instruction } : {}),
+      audio_cover_strength: audioCoverStrength,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const slug = (title || 'ace-step-params')
+      .toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
+    a.download = `${slug}-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   // Reuse Effect - must be after all state declarations
@@ -1122,8 +1231,35 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
         </div>
       )}
       <div className="p-4 pt-14 md:pt-4 pb-24 lg:pb-32 space-y-5">
-        {/* Phase 4: 7-mode segmented selector + per-mode intro + Basic/Pro toggle */}
+        {/* Phase 4+5: 7-mode segmented selector + per-mode intro + Basic/Pro
+            toggle. The new top header bundles Examples / Load / Export so the
+            JSON workflow is no longer buried under Pro+Advanced. */}
         <div className="space-y-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <ExamplesMenu
+              onPick={(preset) => {
+                applyParamsObject(preset.data);
+                handleModeChange(preset.mode);
+              }}
+            />
+            <Tooltip content={t('loadJsonTooltip')} placement="bottom">
+              <label className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-700 dark:text-zinc-200 bg-white dark:bg-suno-card border border-zinc-200 dark:border-white/10 hover:border-pink-400 dark:hover:border-pink-500 cursor-pointer transition-colors">
+                <UploadIcon size={12} />
+                <span>{t('loadJson')}</span>
+                <input type="file" accept=".json" onChange={handleLoadParamsFile} className="hidden" />
+              </label>
+            </Tooltip>
+            <Tooltip content={t('exportJsonTooltip')} placement="bottom">
+              <button
+                type="button"
+                onClick={exportParamsAsJson}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-zinc-700 dark:text-zinc-200 bg-white dark:bg-suno-card border border-zinc-200 dark:border-white/10 hover:border-pink-400 dark:hover:border-pink-500 transition-colors"
+              >
+                <DownloadIcon size={12} />
+                <span>{t('exportJson')}</span>
+              </button>
+            </Tooltip>
+          </div>
           <ModeTabs current={mode} onChange={handleModeChange} />
           <div className="flex items-start justify-between gap-2">
             <ModeIntroCard mode={mode} />

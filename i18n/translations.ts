@@ -663,6 +663,13 @@ export const translations = {
     proModeTooltip: 'Show all advanced sections (LM / Diffusion / LoRA / Output).',
     // Phase 1.4: mode labels & hints (auto-generated)
     dragToResize: 'Drag to resize · Double-click to reset',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examples: 'Examples',
+    examplesHeader: 'Bundled prompts & params',
+    loadJson: 'Load JSON',
+    exportJson: 'Export JSON',
+    loadJsonTooltip: 'Load a parameters JSON (compatible with ACE-Step Gradio examples).',
+    exportJsonTooltip: 'Save current settings as JSON for sharing or reuse.',
   },
   zh: {
     // Navigation
@@ -1326,6 +1333,13 @@ export const translations = {
     proModeTooltip: '显示全部高级区段（LM / 扩散 / LoRA / 输出）。',
     // Phase 1.4: mode labels & hints (auto-generated)
     dragToResize: '拖动调整宽度 · 双击重置',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examples: '示例',
+    examplesHeader: '内建提示词与参数',
+    loadJson: '载入 JSON',
+    exportJson: '导出 JSON',
+    loadJsonTooltip: '载入参数 JSON 文件（兼容 ACE-Step Gradio 范例）。',
+    exportJsonTooltip: '把当前设定存成 JSON，方便分享或重复使用。',
   },
   ja: {
     // Navigation
@@ -1989,6 +2003,13 @@ export const translations = {
     proModeTooltip: '高度な全セクションを表示（LM / 拡散 / LoRA / 出力）。',
     // Phase 1.4: mode labels & hints (auto-generated)
     dragToResize: 'ドラッグで幅調整・ダブルクリックでリセット',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examples: 'サンプル',
+    examplesHeader: '内蔵プロンプトとパラメータ',
+    loadJson: 'JSON 読込',
+    exportJson: 'JSON 書出',
+    loadJsonTooltip: 'パラメータ JSON を読み込みます（ACE-Step Gradio サンプル互換）。',
+    exportJsonTooltip: '現在の設定を JSON として保存（共有・再利用用）。',
   },
   ko: {
     // Navigation
@@ -2647,6 +2668,13 @@ export const translations = {
     proModeTooltip: '모든 고급 섹션을 표시(LM / 디퓨전 / LoRA / 출력).',
     // Phase 1.4: mode labels & hints (auto-generated)
     dragToResize: '드래그로 너비 조절 · 더블클릭으로 초기화',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examples: '예제',
+    examplesHeader: '내장 프롬프트 및 파라미터',
+    loadJson: 'JSON 불러오기',
+    exportJson: 'JSON 내보내기',
+    loadJsonTooltip: '파라미터 JSON 파일을 불러옵니다(ACE-Step Gradio 예제 호환).',
+    exportJsonTooltip: '현재 설정을 JSON 으로 저장(공유·재사용용).',
   },
   'zh-TW': {
     // Navigation
@@ -3310,6 +3338,13 @@ export const translations = {
     proModeTooltip: '顯示全部進階區段（LM / 擴散 / LoRA / 輸出）。',
     // Phase 1.4: mode labels & hints (auto-generated)
     dragToResize: '拖曳調整寬度 · 雙擊還原',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examples: '範例',
+    examplesHeader: '內建提示詞與參數',
+    loadJson: '載入 JSON',
+    exportJson: '匯出 JSON',
+    loadJsonTooltip: '載入參數 JSON 檔（相容 ACE-Step Gradio 範例）。',
+    exportJsonTooltip: '把目前設定存成 JSON，方便分享或重複使用。',
   },
 };
 
