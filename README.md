@@ -1,13 +1,28 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/🎵-ACE--Step_UI-ff69b4?style=for-the-badge&labelColor=1a1a1a" alt="ACE-Step UI" height="60">
+  <img src="https://img.shields.io/badge/🎵-ACE--Step_UI_Redesign-ff69b4?style=for-the-badge&labelColor=1a1a1a" alt="ACE-Step UI Redesign" height="60">
 </p>
 
-<h1 align="center">ACE-Step UI</h1>
+<h1 align="center">ACE-Step UI · Redesign Fork</h1>
 
 <p align="center">
-  <strong>The Ultimate Open Source Suno Alternative</strong><br>
-  <em>Seamless integration with <a href="https://github.com/ace-step/ACE-Step-1.5">ACE-Step 1.5</a> - The Open Source AI Music Generation Model</em>
+  <strong>Create-panel UX overhaul · 7-mode visibility · zh-TW · resizable workspace · live example presets</strong><br>
+  <em>Fork of <a href="https://github.com/fspecii/ace-step-ui">fspecii/ace-step-ui</a>, integrating <a href="https://github.com/ace-step/ACE-Step-1.5">ACE-Step 1.5</a> – The Open Source AI Music Generation Model</em>
 </p>
+
+> ### 🔱 About this fork
+>
+> This repository is a UI/UX-focused fork of [**fspecii/ace-step-ui**](https://github.com/fspecii/ace-step-ui)
+> (which is itself the upstream of the original Ambsd ACE-Step UI). Backend
+> generation behaviour, the SQLite schema, and the underlying ACE-Step 1.5 API
+> are unchanged — every modification lives in the frontend layer (`App.tsx`,
+> `components/`, `i18n/`, `config/`) plus one read-only backend route
+> (`/api/examples`). All upstream commits up to `8f67d6a` are preserved as the
+> baseline; everything new is captured in the [Modifications in This Fork](#-modifications-in-this-fork)
+> section below.
+>
+> **Credit**: thanks to **[fspecii](https://github.com/fspecii)** for the
+> upstream baseline and to **[Ambsd](https://www.youtube.com/@Ambsd-yy7os)**
+> for the original project.
 
 <p align="center">
   <a href="https://www.youtube.com/@Ambsd-yy7os">
@@ -19,6 +34,7 @@
 </p>
 
 <p align="center">
+  <a href="#-modifications-in-this-fork">What's New</a> •
   <a href="#-demo">Demo</a> •
   <a href="#-why-ace-step-ui">Why ACE-Step</a> •
   <a href="#-features">Features</a> •
@@ -35,6 +51,95 @@
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
   <img src="https://img.shields.io/github/stars/fspecii/ace-step-ui?style=flat-square" alt="Stars">
 </p>
+
+---
+
+## 🆕 Modifications in This Fork
+
+A focused UI/UX overhaul of the **Create** panel, plus quality-of-life
+fixes around layout, internationalisation and example presets. Backend
+generation logic is unchanged.
+
+### Layout & workspace
+
+- **Wider, resizable Create panel** — defaults scale with viewport
+  (`480 / 540 / 620 / 720 px` at md/lg/xl/2xl), and a vertical drag
+  handle between the Create panel and the song list lets you adjust the
+  split live (range `360–1200 px`, double-click to reset, persisted to
+  `localStorage[ace-create-panel-width]`).
+- **Workspace as a collapsible drawer** — the right-hand sidebar is now
+  a `32 px` icon rail that overlays a `400 px` drawer when expanded;
+  ESC and backdrop-click close it. Defaults to collapsed so the song
+  list keeps maximum width on ultrawide screens (capped + centred via
+  `max-w-[1280px] 2xl:max-w-[1440px] mx-auto`).
+
+### Mode-driven UI
+
+- **7 segmented mode tabs** at the top of the Create panel — Simple,
+  Custom, Remix, Repaint, Extract, Lego, Complete — wrapping to a second
+  row on narrower widths so nothing is ever cut off.
+- **`config/createModeConfig.ts`** centralises the visibility map for
+  each mode (which sections show, which params are auto/required/hidden,
+  per-mode defaults and forced overrides like `thinking=false` for
+  Repaint/Extract/Lego).
+- **Mode intro card** – a one-line description of the active mode in the
+  user’s language, sourced from i18n.
+- **Basic ⇄ Pro tier toggle** with `localStorage[ace-create-tier]`
+  persistence: Basic hides the entire Advanced section (50+ params);
+  Pro restores the full collapsible.
+
+### Internationalisation & hover hints
+
+- **New language: 繁體中文 (`zh-TW`)** — 567 keys translated and locale-
+  aware (Taiwan-style terminology via OpenCC `s2twp`, then human-tuned).
+  Settings panel adds *繁體中文* selector. Existing zh / ja / ko /en
+  remain.
+- **Inline hover hints on parameters** — new `Tooltip` and `ParamLabel`
+  components (no third-party deps) plus a `hintKey` prop on the existing
+  `EditableSlider`. 30+ hints translated across all 5 languages
+  (`hint.bpm`, `hint.guidanceScale`, `hint.lmTemperature`, …).
+
+### Example presets (live from the model repo)
+
+- **Examples menu** in the Create-panel header — lazy-loads the full
+  **400 official ACE-Step 1.5 samples** (200 simple-mode + 200
+  text2music) directly from `ACE-Step-1.5/examples/`.
+- **Search box + per-row metadata pills** (id / language / BPM /
+  instrumental flag), grouped by category, sorted A→Z.
+- **Backend route** `GET /api/examples` (list summaries) and
+  `GET /api/examples/:cat/:id` (full JSON), with whitelisted categories
+  + ID regex to prevent path traversal. The model repo path is
+  auto-detected (sibling vs nested layout) and overridable via
+  `ACE_STEP_DIR` / `EXAMPLES_DIR` env vars.
+- **Load JSON / Export JSON** buttons next to Examples — both accept
+  the official Gradio JSON layout (`caption / keyscale / language /
+  timesignature / think`) AND the existing `snake_case` schema, so any
+  preset round-trips between the Gradio UI, the backend, and this fork.
+
+### Component decomposition
+
+- Extracted `LoraSection` and `AdvancedSection` (~810 lines) out of the
+  monolithic `CreatePanel.tsx`, dropping the main file by **~590
+  lines** with zero visual diff. New `components/create/` namespace:
+  `ModeTabs`, `ModeIntroCard`, `BasicProToggle`, `ExamplesMenu`,
+  `sections/{LoraSection, AdvancedSection}`. Further `SimpleMode` /
+  `CustomInputs` extraction is queued for the next pass.
+
+### Operational
+
+- **Backend default port: `3011`** (was `3001`) so this fork can run
+  side-by-side with the upstream backend on a single machine without
+  the EADDRINUSE clash. Frontend `.env` updates `VITE_BACKEND_URL` to
+  match.
+- Added two helper scripts in `scripts/`:
+  `generate-zh-tw.py` (one-shot OpenCC conversion) and
+  `add-translation-keys.py` (idempotent upsert of mode/hint/UI keys
+  across all 5 languages).
+
+### Commit history
+
+The 10-commit fork history is preserved on the `main` branch; run
+`git log --oneline` for the per-phase breakdown.
 
 ---
 
