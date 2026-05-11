@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { HelpCircle } from 'lucide-react';
+import { useI18n } from '../context/I18nContext';
+import { TranslationKey } from '../i18n/translations';
+import { Tooltip } from './ui/Tooltip';
 
 interface EditableSliderProps {
   label: string;
@@ -10,6 +14,8 @@ interface EditableSliderProps {
   formatDisplay?: (value: number) => string;
   helpText?: string;
   title?: string;
+  /** Translation key under hint.* namespace; renders a (?) icon next to the label. */
+  hintKey?: TranslationKey;
   autoLabel?: string;
 }
 
@@ -23,10 +29,13 @@ export const EditableSlider: React.FC<EditableSliderProps> = ({
   formatDisplay,
   helpText,
   title = '',
+  hintKey,
   autoLabel = 'Auto',
 }) => {
+  const { t } = useI18n();
   const [inputValue, setInputValue] = useState(value.toString());
   const [isEditing, setIsEditing] = useState(false);
+  const hintText = hintKey ? t(hintKey) : null;
 
   useEffect(() => {
     if (!isEditing) {
@@ -64,7 +73,21 @@ export const EditableSlider: React.FC<EditableSliderProps> = ({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title={title}>{label}</label>
+        <label className="flex items-center gap-1 text-xs font-medium text-zinc-600 dark:text-zinc-400" title={!hintText ? title : undefined}>
+          <span>{label}</span>
+          {hintText && hintText !== hintKey && (
+            <Tooltip content={hintText} placement="top">
+              <button
+                type="button"
+                tabIndex={-1}
+                aria-label="More info"
+                className="inline-flex items-center text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 cursor-help"
+              >
+                <HelpCircle size={11} />
+              </button>
+            </Tooltip>
+          )}
+        </label>
         {isEditing ? (
           <input
             type="number"

@@ -115,6 +115,7 @@ export const LoraSection: React.FC<LoraSectionProps> = ({
                     <div className={!loraLoaded || !loraEnabled ? 'opacity-40 pointer-events-none' : ''}>
                         <EditableSlider
                             label={t('loraScale')}
+                            hintKey="hint.loraScale"
                             value={loraScale}
                             min={0}
                             max={1}

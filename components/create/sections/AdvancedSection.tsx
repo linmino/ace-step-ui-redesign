@@ -157,6 +157,7 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
 
                     <EditableSlider
                         label={t('duration')}
+                        hintKey="hint.duration"
                         value={s.duration}
                         min={-1}
                         max={600}
@@ -169,13 +170,13 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
 
                     <EditableSlider
                         label={t('batchSize')}
+                        hintKey="hint.batchSize"
                         value={s.batchSize}
                         min={1}
                         max={4}
                         step={1}
                         onChange={set.setBatchSize}
                         helpText={t('numberOfVariations')}
-                        title="Creates multiple variations in a single run. More variations = longer total time."
                     />
 
                     {/* Bulk Generate */}
@@ -206,17 +207,18 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
 
                     <EditableSlider
                         label={t('inferenceSteps')}
+                        hintKey="hint.inferenceSteps"
                         value={s.inferenceSteps}
                         min={1}
                         max={set.isTurboModel(s.selectedModel) ? 20 : 200}
                         step={1}
                         onChange={set.setInferenceSteps}
                         helpText={t('moreStepsBetterQuality')}
-                        title="More steps usually improves quality but slows generation."
                     />
 
                     <EditableSlider
                         label={t('guidanceScale')}
+                        hintKey="hint.guidanceScale"
                         value={s.guidanceScale}
                         min={1}
                         max={15}
@@ -224,7 +226,6 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
                         onChange={set.setGuidanceScale}
                         formatDisplay={(val) => val.toFixed(1)}
                         helpText={t('howCloselyFollowPrompt')}
-                        title="How strongly the model follows the prompt. Higher = stricter, lower = freer."
                     />
 
                     {/* Audio Format & Inference Method */}
@@ -324,6 +325,7 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
 
                     <EditableSlider
                         label={t('shift')}
+                        hintKey="hint.shift"
                         value={s.shift}
                         min={1}
                         max={5}
@@ -331,7 +333,6 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
                         onChange={set.setShift}
                         formatDisplay={(val) => val.toFixed(1)}
                         helpText={t('timestepShiftForBase')}
-                        title="Adjusts the diffusion schedule. Only affects base model."
                     />
 
                     {/* Divider */}
@@ -362,6 +363,7 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
                         <div className="bg-white dark:bg-suno-card rounded-xl border border-zinc-200 dark:border-white/5 p-4 space-y-4">
                             <EditableSlider
                                 label={t('lmTemperature')}
+                                hintKey="hint.lmTemperature"
                                 value={s.lmTemperature}
                                 min={0}
                                 max={2}
@@ -369,10 +371,10 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
                                 onChange={set.setLmTemperature}
                                 formatDisplay={(val) => val.toFixed(2)}
                                 helpText={t('higherMoreRandom')}
-                                title="Higher temperature = more random word choices."
                             />
                             <EditableSlider
                                 label={t('lmCfgScale')}
+                                hintKey="hint.lmCfgScale"
                                 value={s.lmCfgScale}
                                 min={1}
                                 max={3}
@@ -380,27 +382,26 @@ export const AdvancedSection: React.FC<AdvancedSectionProps> = ({ state: s, set 
                                 onChange={set.setLmCfgScale}
                                 formatDisplay={(val) => val.toFixed(1)}
                                 helpText={t('noCfgScale')}
-                                title="How strongly the lyric model follows the prompt."
                             />
                             <div className="grid grid-cols-2 gap-3">
                                 <EditableSlider
                                     label={t('topK')}
+                                    hintKey="hint.lmTopK"
                                     value={s.lmTopK}
                                     min={0}
                                     max={100}
                                     step={1}
                                     onChange={set.setLmTopK}
-                                    title="Restricts choices to the K most likely tokens. 0 disables."
                                 />
                                 <EditableSlider
                                     label={t('topP')}
+                                    hintKey="hint.lmTopP"
                                     value={s.lmTopP}
                                     min={0}
                                     max={1}
                                     step={0.01}
                                     onChange={set.setLmTopP}
                                     formatDisplay={(val) => val.toFixed(2)}
-                                    title="Samples from the smallest set whose total probability is P."
                                 />
                             </div>
                             <div className="space-y-1.5">
