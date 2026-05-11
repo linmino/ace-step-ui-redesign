@@ -626,20 +626,14 @@ export function getTrainingAudioUrl(audioPath: unknown, token?: string): string 
 
 // Examples API — serves official ACE-Step prompt/parameter samples from
 // ACE-Step-1.5/examples/ on the backend filesystem.
-export interface ExampleSummary {
-  id: string;
-  category: 'simple_mode' | 'text2music';
-  mode: 'simple' | 'custom';
-  label: string;
-  blurb: string;
-  language?: string;
-  bpm?: number;
-  duration?: number;
-  instrumental?: boolean;
-}
-
 export const examplesApi = {
-  list: () => api<{ examples: ExampleSummary[]; count: number }>('/api/examples'),
+  // Server picks a random example from the requested bucket — cheap (readdir + 1 file read)
+  // unlike list() which parses every JSON in both buckets.
+  random: (category: 'simple_mode' | 'text2music') =>
+    api<{ category: 'simple_mode' | 'text2music'; id: string; data: Record<string, unknown> }>(
+      `/api/examples/random?category=${encodeURIComponent(category)}`
+    ),
+  // Kept for direct deep-linking / loading a known example id.
   load: (category: 'simple_mode' | 'text2music', id: string) =>
     api<{ category: string; id: string; data: Record<string, unknown> }>(
       `/api/examples/${encodeURIComponent(category)}/${encodeURIComponent(id)}`

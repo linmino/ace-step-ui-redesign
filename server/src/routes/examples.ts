@@ -2,8 +2,9 @@
  * Serves official ACE-Step prompt/parameter examples from the local
  * ACE-Step-1.5/examples folder. Read-only, no auth required.
  *
- *   GET /api/examples           -> list of all examples with metadata
- *   GET /api/examples/:cat/:id  -> full JSON of one example
+ *   GET /api/examples                   -> list of all examples with metadata
+ *   GET /api/examples/random?category=  -> one random example (cheap: readdir + read 1 file)
+ *   GET /api/examples/:cat/:id          -> full JSON of one example
  *
  * Whitelisted categories prevent path traversal; ids are validated as
  * alphanumeric+underscore+dash before joining into the filesystem path.
@@ -90,6 +91,43 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
     } catch (err) {
         console.error('Failed to list examples:', err);
         res.status(500).json({ error: 'Failed to list examples' });
+    }
+});
+
+// Random pick — must be declared BEFORE '/:category/:id' or Express will
+// route '/random' as { category: 'random' } and the category guard rejects it.
+router.get('/random', async (req: Request, res: Response): Promise<void> => {
+    const category = req.query.category;
+    if (typeof category !== 'string' || !isAllowedCategory(category)) {
+        res.status(400).json({ error: 'Invalid or missing category' });
+        return;
+    }
+    try {
+        const dir = path.join(config.examples.dir, category);
+        let files: string[];
+        try {
+            files = await fs.readdir(dir);
+        } catch {
+            res.status(404).json({ error: `Examples directory missing: ${category}` });
+            return;
+        }
+        const ids = files
+            .filter((f) => f.endsWith('.json'))
+            .map((f) => f.slice(0, -5))
+            .filter((id) => ID_PATTERN.test(id));
+        if (ids.length === 0) {
+            res.status(404).json({ error: `No examples in ${category}` });
+            return;
+        }
+        const id = ids[Math.floor(Math.random() * ids.length)];
+        const raw = await fs.readFile(path.join(dir, `${id}.json`), 'utf-8');
+        const data = JSON.parse(raw) as Record<string, unknown>;
+        // Random pick is by definition not cacheable.
+        res.setHeader('Cache-Control', 'no-store');
+        res.json({ category, id, data });
+    } catch (err) {
+        console.error('Failed to pick random example:', err);
+        res.status(500).json({ error: 'Failed to pick random example' });
     }
 });
 

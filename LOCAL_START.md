@@ -8,7 +8,7 @@
 2. 安裝 UI 依賴：
 
 ```bat
-cd ace-step-ui
+cd ace-step-ui-redesign
 npm install
 cd server
 npm install
