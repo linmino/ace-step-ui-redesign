@@ -8,6 +8,10 @@ import { MAIN_STYLES } from '../data/genres';
 import { EditableSlider } from './EditableSlider';
 import { LoraSection } from './create/sections/LoraSection';
 import { AdvancedSection } from './create/sections/AdvancedSection';
+import { ModeTabs } from './create/ModeTabs';
+import { ModeIntroCard } from './create/ModeIntroCard';
+import { BasicProToggle, CreateTier } from './create/BasicProToggle';
+import { CreateMode, MODE_CONFIGS, DEFAULT_MODE } from '../config/createModeConfig';
 
 interface ReferenceTrack {
   id: string;
@@ -136,6 +140,35 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
 
   // Mode
   const [customMode, setCustomMode] = useState(true);
+  const [mode, setMode] = useState<CreateMode>(() => {
+    const stored = localStorage.getItem('ace-create-mode') as CreateMode | null;
+    const valid: CreateMode[] = ['simple', 'custom', 'remix', 'repaint', 'extract', 'lego', 'complete'];
+    return stored && valid.includes(stored) ? stored : DEFAULT_MODE;
+  });
+  const [tier, setTier] = useState<CreateTier>(() => {
+    const stored = localStorage.getItem('ace-create-tier') as CreateTier | null;
+    return stored === 'pro' || stored === 'basic' ? stored : 'basic';
+  });
+  const handleTierChange = (next: CreateTier) => {
+    setTier(next);
+    localStorage.setItem('ace-create-tier', next);
+  };
+  // Forward mode -> legacy customMode + taskType so existing JSX keeps working.
+  // Phase 4 wires the 7-mode UI on top of the existing 2-state (customMode + taskType)
+  // logic without ripping it out; Phase 7 can collapse them once all sections are
+  // mode-aware.
+  const handleModeChange = (next: CreateMode) => {
+    setMode(next);
+    localStorage.setItem('ace-create-mode', next);
+    const cfg = MODE_CONFIGS[next];
+    setCustomMode(next !== 'simple');
+    setTaskType(cfg.taskType);
+    if (cfg.defaults.audioCoverStrength !== undefined) setAudioCoverStrength(cfg.defaults.audioCoverStrength);
+    if (cfg.defaults.repaintingStart !== undefined) setRepaintingStart(cfg.defaults.repaintingStart);
+    if (cfg.defaults.repaintingEnd !== undefined) setRepaintingEnd(cfg.defaults.repaintingEnd);
+    if (cfg.defaults.trackName !== undefined) setTrackName(cfg.defaults.trackName as string);
+    if (cfg.overrides?.thinking !== undefined) setThinking(cfg.overrides.thinking);
+  };
 
   // Simple Mode
   const [songDescription, setSongDescription] = useState('');
@@ -1089,6 +1122,15 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
         </div>
       )}
       <div className="p-4 pt-14 md:pt-4 pb-24 lg:pb-32 space-y-5">
+        {/* Phase 4: 7-mode segmented selector + per-mode intro + Basic/Pro toggle */}
+        <div className="space-y-2">
+          <ModeTabs current={mode} onChange={handleModeChange} />
+          <div className="flex items-start justify-between gap-2">
+            <ModeIntroCard mode={mode} />
+            <BasicProToggle tier={tier} onChange={handleTierChange} />
+          </div>
+        </div>
+
         <input
           ref={referenceInputRef}
           type="file"
@@ -1130,21 +1172,9 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Mode Toggle */}
-            <div className="flex items-center bg-zinc-200 dark:bg-black/40 rounded-lg p-1 border border-zinc-300 dark:border-white/5">
-              <button
-                onClick={() => setCustomMode(false)}
-                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${!customMode ? 'bg-white dark:bg-zinc-800 text-black dark:text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300'}`}
-              >
-                {t('simple')}
-              </button>
-              <button
-                onClick={() => setCustomMode(true)}
-                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${customMode ? 'bg-white dark:bg-zinc-800 text-black dark:text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300'}`}
-              >
-                {t('custom')}
-              </button>
-            </div>
+            {/* Phase 4: legacy Simple/Custom toggle replaced by ModeTabs above.
+                Kept for one release cycle behind a flag so reuse-prompt JSON
+                with `customMode` still hydrates correctly via `setCustomMode`. */}
 
             {/* Model Selection */}
             <div className="relative" ref={modelMenuRef}>
@@ -1808,8 +1838,8 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
           </div>
         </div>
 
-        {/* ADVANCED SETTINGS — extracted in Phase 3 */}
-        <AdvancedSection
+        {/* ADVANCED SETTINGS — Phase 5 gates this behind Pro tier */}
+        {tier === 'pro' && <AdvancedSection
           state={{
             showAdvanced, showLmParams,
             duration, batchSize, bulkCount, inferenceSteps, guidanceScale,
@@ -1836,7 +1866,7 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
             setIsFormatCaption, setGetScores, setGetLrc,
             handleLoadParamsFile, isTurboModel,
           }}
-        />
+        />}
         {/* OLD ADVANCED BUTTON REMOVED: replaced by AdvancedSection component */}
         {false && (
         <button
