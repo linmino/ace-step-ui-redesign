@@ -368,7 +368,73 @@ HINT_ENTRIES: list[tuple[str, dict[str, str]]] = [
     }),
 ]
 
-ALL_ENTRIES = MODE_ENTRIES + HINT_ENTRIES
+UI_ENTRIES: list[tuple[str, dict[str, str]]] = [
+    ("workspace", {
+        "en": "Workspace",
+        "zh": "工作区",
+        "zh-TW": "工作區",
+        "ja": "ワークスペース",
+        "ko": "워크스페이스",
+    }),
+    ("openWorkspace", {
+        "en": "Open workspace",
+        "zh": "打开工作区",
+        "zh-TW": "開啟工作區",
+        "ja": "ワークスペースを開く",
+        "ko": "워크스페이스 열기",
+    }),
+    ("collapseWorkspace", {
+        "en": "Collapse workspace",
+        "zh": "收起工作区",
+        "zh-TW": "收合工作區",
+        "ja": "ワークスペースを折りたたむ",
+        "ko": "워크스페이스 접기",
+    }),
+    ("expandWorkspace", {
+        "en": "Expand workspace",
+        "zh": "展开工作区",
+        "zh-TW": "展開工作區",
+        "ja": "ワークスペースを展開",
+        "ko": "워크스페이스 펼치기",
+    }),
+    ("noSongSelected", {
+        "en": "No song selected",
+        "zh": "未选择歌曲",
+        "zh-TW": "未選擇歌曲",
+        "ja": "曲が選択されていません",
+        "ko": "선택된 곡이 없습니다",
+    }),
+    ("basicMode", {
+        "en": "Basic",
+        "zh": "基础",
+        "zh-TW": "基礎",
+        "ja": "ベーシック",
+        "ko": "기본",
+    }),
+    ("proMode", {
+        "en": "Pro",
+        "zh": "专业",
+        "zh-TW": "專業",
+        "ja": "プロ",
+        "ko": "프로",
+    }),
+    ("basicModeTooltip", {
+        "en": "Show only the most common parameters for fast generation.",
+        "zh": "仅显示最常用参数，便于快速生成。",
+        "zh-TW": "僅顯示最常用參數，便於快速生成。",
+        "ja": "最も使う基本パラメータのみ表示し、素早く生成します。",
+        "ko": "가장 자주 쓰는 기본 파라미터만 표시해 빠르게 생성합니다.",
+    }),
+    ("proModeTooltip", {
+        "en": "Show all advanced sections (LM / Diffusion / LoRA / Output).",
+        "zh": "显示全部高级区段（LM / 扩散 / LoRA / 输出）。",
+        "zh-TW": "顯示全部進階區段（LM / 擴散 / LoRA / 輸出）。",
+        "ja": "高度な全セクションを表示（LM / 拡散 / LoRA / 出力）。",
+        "ko": "모든 고급 섹션을 표시(LM / 디퓨전 / LoRA / 출력).",
+    }),
+]
+
+ALL_ENTRIES = MODE_ENTRIES + HINT_ENTRIES + UI_ENTRIES
 
 
 def find_block_end(text: str, lang_key: str) -> int | None:
@@ -419,8 +485,11 @@ def upsert_block(text: str, lang: str, entries: list[tuple[str, str]]) -> str:
     new_lines: list[str] = []
     for key, value in entries:
         # Match `<key>: '...'` or `'<key>': '...'` lines.
+        # The string body must allow escaped apostrophes (e.g. \'foo\') and escaped quotes,
+        # so the inner pattern is `(?:\\.|[^'\\])*` rather than the naive `[^']*`.
         pattern = re.compile(
-            rf"^(\s+)(?:{re.escape(key)}|{re.escape(js_string(key))}):\s*(?:'[^']*'|\"[^\"]*\"),?\s*$",
+            rf"^(\s+)(?:{re.escape(key)}|{re.escape(js_string(key))}):\s*"
+            r"(?:'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"),?\s*$",
             re.MULTILINE,
         )
         replacement_line = f"    {js_key(key)}: {js_string(value)},"

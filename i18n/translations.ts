@@ -650,8 +650,17 @@ export const translations = {
     'hint.referenceAudio': 'Optional audio whose timbre/style guides the new song. Leave empty to skip.',
     'hint.sourceAudio': 'The audio to remix / repaint / extract from. Required for these modes.',
     'hint.audioCodes': 'Pre-computed semantic audio codes (5Hz). Advanced override for the LM melody plan.',
+    // Phase 1.4: mode labels & hints (auto-generated)
     'hint.lmNegativePrompt': 'Tell the LM what to avoid. Default \'NO USER INPUT\' lets the model decide.',
-  },
+    workspace: 'Workspace',
+    openWorkspace: 'Open workspace',
+    collapseWorkspace: 'Collapse workspace',
+    expandWorkspace: 'Expand workspace',
+    noSongSelected: 'No song selected',
+    basicMode: 'Basic',
+    proMode: 'Pro',
+    basicModeTooltip: 'Show only the most common parameters for fast generation.',
+    proModeTooltip: 'Show all advanced sections (LM / Diffusion / LoRA / Output).',},
   zh: {
     // Navigation
     create: '创作',
@@ -1301,8 +1310,17 @@ export const translations = {
     'hint.referenceAudio': '可选参考音频，其音色 / 风格将引导新歌生成；留空则不使用。',
     'hint.sourceAudio': '用于翻唱 / 重绘 / 抽轨的源音频，这些模式必填。',
     'hint.audioCodes': '预先计算的语义音频码 (5Hz)，用于覆盖 LM 旋律规划，进阶用法。',
+    // Phase 1.4: mode labels & hints (auto-generated)
     'hint.lmNegativePrompt': '告诉语言模型要避免的内容。预设 \'NO USER INPUT\' 让模型自行决定。',
-  },
+    workspace: '工作区',
+    openWorkspace: '打开工作区',
+    collapseWorkspace: '收起工作区',
+    expandWorkspace: '展开工作区',
+    noSongSelected: '未选择歌曲',
+    basicMode: '基础',
+    proMode: '专业',
+    basicModeTooltip: '仅显示最常用参数，便于快速生成。',
+    proModeTooltip: '显示全部高级区段（LM / 扩散 / LoRA / 输出）。',},
   ja: {
     // Navigation
     create: '作成',
@@ -1952,8 +1970,17 @@ export const translations = {
     'hint.referenceAudio': '任意の参考音源。音色やスタイルを新曲生成に活かします。空欄で無効。',
     'hint.sourceAudio': 'リミックス・リペイント・抽出に使うソース音源。これらモードでは必須。',
     'hint.audioCodes': '事前計算済みの意味的音声コード (5Hz)。LM メロディ計画を上書きする上級用途。',
+    // Phase 1.4: mode labels & hints (auto-generated)
     'hint.lmNegativePrompt': 'LM に避けてほしい内容を指定。デフォルト \'NO USER INPUT\' で自動。',
-  },
+    workspace: 'ワークスペース',
+    openWorkspace: 'ワークスペースを開く',
+    collapseWorkspace: 'ワークスペースを折りたたむ',
+    expandWorkspace: 'ワークスペースを展開',
+    noSongSelected: '曲が選択されていません',
+    basicMode: 'ベーシック',
+    proMode: 'プロ',
+    basicModeTooltip: '最も使う基本パラメータのみ表示し、素早く生成します。',
+    proModeTooltip: '高度な全セクションを表示（LM / 拡散 / LoRA / 出力）。',},
   ko: {
     // Navigation
     create: '생성',
@@ -2598,8 +2625,17 @@ export const translations = {
     'hint.referenceAudio': '선택 참조 오디오. 음색·스타일을 새 곡에 반영합니다. 비워두면 미사용.',
     'hint.sourceAudio': '리믹스·리페인트·추출에 사용할 소스 오디오. 해당 모드에서 필수입니다.',
     'hint.audioCodes': '미리 계산된 의미 오디오 코드(5Hz). LM 멜로디 계획을 덮어쓰는 고급 용도.',
+    // Phase 1.4: mode labels & hints (auto-generated)
     'hint.lmNegativePrompt': 'LM 이 피해야 할 내용을 지정. 기본값 \'NO USER INPUT\' 은 자동.',
-  },
+    workspace: '워크스페이스',
+    openWorkspace: '워크스페이스 열기',
+    collapseWorkspace: '워크스페이스 접기',
+    expandWorkspace: '워크스페이스 펼치기',
+    noSongSelected: '선택된 곡이 없습니다',
+    basicMode: '기본',
+    proMode: '프로',
+    basicModeTooltip: '가장 자주 쓰는 기본 파라미터만 표시해 빠르게 생성합니다.',
+    proModeTooltip: '모든 고급 섹션을 표시(LM / 디퓨전 / LoRA / 출력).',},
   'zh-TW': {
     // Navigation
     create: '創作',
@@ -3249,8 +3285,17 @@ export const translations = {
     'hint.referenceAudio': '可選參考音訊，其音色 / 風格將引導新歌生成；留空則不使用。',
     'hint.sourceAudio': '用於翻唱 / 重繪 / 抽軌的源音訊，這些模式必填。',
     'hint.audioCodes': '預先計算的語義音訊碼 (5Hz)，用於覆寫 LM 旋律規劃，進階用法。',
+    // Phase 1.4: mode labels & hints (auto-generated)
     'hint.lmNegativePrompt': '告訴語言模型要避免的內容。預設 \'NO USER INPUT\' 讓模型自行決定。',
-  },
+    workspace: '工作區',
+    openWorkspace: '開啟工作區',
+    collapseWorkspace: '收合工作區',
+    expandWorkspace: '展開工作區',
+    noSongSelected: '未選擇歌曲',
+    basicMode: '基礎',
+    proMode: '專業',
+    basicModeTooltip: '僅顯示最常用參數，便於快速生成。',
+    proModeTooltip: '顯示全部進階區段（LM / 擴散 / LoRA / 輸出）。',},
 };
 
 export type TranslationKey = keyof typeof translations.en;

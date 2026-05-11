@@ -3,6 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { CreatePanel } from './components/CreatePanel';
 import { SongList } from './components/SongList';
 import { RightSidebar } from './components/RightSidebar';
+import { WorkspaceRail } from './components/WorkspaceRail';
 import { Player } from './components/Player';
 import { LibraryView } from './components/LibraryView';
 import { CreatePlaylistModal, AddToPlaylistModal } from './components/PlaylistModals';
@@ -76,7 +77,13 @@ function AppContent() {
 
   // UI State
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showRightSidebar, setShowRightSidebar] = useState(true);
+  const [showRightSidebar, setShowRightSidebar] = useState(() => {
+    const stored = localStorage.getItem('ace-workspace-mode');
+    return stored === 'expanded';
+  });
+  useEffect(() => {
+    localStorage.setItem('ace-workspace-mode', showRightSidebar ? 'expanded' : 'collapsed');
+  }, [showRightSidebar]);
   const [showLeftSidebar, setShowLeftSidebar] = useState(true);
   const [pendingAudioSelection, setPendingAudioSelection] = useState<{ target: 'reference' | 'source'; url: string; title?: string } | null>(null);
 
@@ -1306,7 +1313,7 @@ function AppContent() {
             {/* Create Panel */}
             <div className={`
               ${mobileShowList ? 'hidden md:block' : 'w-full'}
-              md:w-[320px] lg:w-[360px] flex-shrink-0 h-full border-r border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-suno-panel relative z-10 transition-colors duration-300
+              md:w-[480px] lg:w-[520px] flex-shrink-0 h-full border-r border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-suno-panel relative z-10 transition-colors duration-300
             `}>
               <CreatePanel
                 onGenerate={handleGenerate}
@@ -1351,26 +1358,26 @@ function AppContent() {
               />
             </div>
 
-            {/* Right Sidebar */}
-            {showRightSidebar && (
-              <div className="hidden xl:block w-[360px] flex-shrink-0 h-full bg-zinc-50 dark:bg-suno-panel relative z-10 border-l border-zinc-200 dark:border-white/5 transition-colors duration-300">
-                <RightSidebar
-                  song={selectedSong}
-                  onClose={() => setShowRightSidebar(false)}
-                  onOpenVideo={() => selectedSong && openVideoGenerator(selectedSong)}
-                  onReuse={handleReuse}
-                  onSongUpdate={handleSongUpdate}
-                  onNavigateToProfile={handleNavigateToProfile}
-                  onNavigateToSong={handleNavigateToSong}
-                  isLiked={selectedSong ? likedSongIds.has(selectedSong.id) : false}
-                  onToggleLike={toggleLike}
-                  onDelete={handleDeleteSong}
-                  onPlay={playSong}
-                  isPlaying={isPlaying}
-                  currentSong={currentSong}
-                />
-              </div>
-            )}
+            {/* Workspace Rail (32px icon bar + overlay drawer) */}
+            <WorkspaceRail
+              expanded={showRightSidebar}
+              onToggle={setShowRightSidebar}
+              selectedSong={selectedSong}
+              rightSidebarProps={{
+                song: selectedSong,
+                onOpenVideo: () => selectedSong && openVideoGenerator(selectedSong),
+                onReuse: handleReuse,
+                onSongUpdate: handleSongUpdate,
+                onNavigateToProfile: handleNavigateToProfile,
+                onNavigateToSong: handleNavigateToSong,
+                isLiked: selectedSong ? likedSongIds.has(selectedSong.id) : false,
+                onToggleLike: toggleLike,
+                onDelete: handleDeleteSong,
+                onPlay: playSong,
+                isPlaying,
+                currentSong,
+              }}
+            />
 
             {/* Mobile Toggle Button */}
             <div className="md:hidden absolute top-4 right-4 z-50">
