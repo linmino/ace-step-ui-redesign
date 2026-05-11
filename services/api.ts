@@ -624,6 +624,28 @@ export function getTrainingAudioUrl(audioPath: unknown, token?: string): string 
   return undefined;
 }
 
+// Examples API — serves official ACE-Step prompt/parameter samples from
+// ACE-Step-1.5/examples/ on the backend filesystem.
+export interface ExampleSummary {
+  id: string;
+  category: 'simple_mode' | 'text2music';
+  mode: 'simple' | 'custom';
+  label: string;
+  blurb: string;
+  language?: string;
+  bpm?: number;
+  duration?: number;
+  instrumental?: boolean;
+}
+
+export const examplesApi = {
+  list: () => api<{ examples: ExampleSummary[]; count: number }>('/api/examples'),
+  load: (category: 'simple_mode' | 'text2music', id: string) =>
+    api<{ category: string; id: string; data: Record<string, unknown> }>(
+      `/api/examples/${encodeURIComponent(category)}/${encodeURIComponent(id)}`
+    ),
+};
+
 export const trainingApi = {
   // Upload audio files for a dataset
   uploadAudio: async (files: File[], datasetName: string, token: string): Promise<{

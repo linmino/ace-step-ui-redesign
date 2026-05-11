@@ -481,6 +481,34 @@ UI_ENTRIES: list[tuple[str, dict[str, str]]] = [
         "ja": "現在の設定を JSON として保存（共有・再利用用）。",
         "ko": "현재 설정을 JSON 으로 저장(공유·재사용용).",
     }),
+    ("examplesSearchPlaceholder", {
+        "en": "Search examples (id, language, BPM…)",
+        "zh": "搜索范例（编号、语言、BPM…）",
+        "zh-TW": "搜尋範例（編號、語言、BPM…）",
+        "ja": "サンプル検索（ID、言語、BPM…）",
+        "ko": "예제 검색(ID, 언어, BPM…)",
+    }),
+    ("examplesNoMatch", {
+        "en": "No examples match your search.",
+        "zh": "没有匹配的范例。",
+        "zh-TW": "沒有符合的範例。",
+        "ja": "一致するサンプルがありません。",
+        "ko": "검색어와 일치하는 예제가 없습니다.",
+    }),
+    ("examplesLoadFailed", {
+        "en": "Failed to load examples",
+        "zh": "载入范例失败",
+        "zh-TW": "載入範例失敗",
+        "ja": "サンプルの読み込みに失敗",
+        "ko": "예제 불러오기 실패",
+    }),
+    ("loading", {
+        "en": "Loading…",
+        "zh": "加载中…",
+        "zh-TW": "載入中…",
+        "ja": "読み込み中…",
+        "ko": "불러오는 중…",
+    }),
 ]
 
 ALL_ENTRIES = MODE_ENTRIES + HINT_ENTRIES + UI_ENTRIES

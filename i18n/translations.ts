@@ -670,6 +670,11 @@ export const translations = {
     exportJson: 'Export JSON',
     loadJsonTooltip: 'Load a parameters JSON (compatible with ACE-Step Gradio examples).',
     exportJsonTooltip: 'Save current settings as JSON for sharing or reuse.',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examplesSearchPlaceholder: 'Search examples (id, language, BPM…)',
+    examplesNoMatch: 'No examples match your search.',
+    examplesLoadFailed: 'Failed to load examples',
+    loading: 'Loading…',
   },
   zh: {
     // Navigation
@@ -1340,6 +1345,11 @@ export const translations = {
     exportJson: '导出 JSON',
     loadJsonTooltip: '载入参数 JSON 文件（兼容 ACE-Step Gradio 范例）。',
     exportJsonTooltip: '把当前设定存成 JSON，方便分享或重复使用。',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examplesSearchPlaceholder: '搜索范例（编号、语言、BPM…）',
+    examplesNoMatch: '没有匹配的范例。',
+    examplesLoadFailed: '载入范例失败',
+    loading: '加载中…',
   },
   ja: {
     // Navigation
@@ -2010,6 +2020,11 @@ export const translations = {
     exportJson: 'JSON 書出',
     loadJsonTooltip: 'パラメータ JSON を読み込みます（ACE-Step Gradio サンプル互換）。',
     exportJsonTooltip: '現在の設定を JSON として保存（共有・再利用用）。',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examplesSearchPlaceholder: 'サンプル検索（ID、言語、BPM…）',
+    examplesNoMatch: '一致するサンプルがありません。',
+    examplesLoadFailed: 'サンプルの読み込みに失敗',
+    loading: '読み込み中…',
   },
   ko: {
     // Navigation
@@ -2675,6 +2690,11 @@ export const translations = {
     exportJson: 'JSON 내보내기',
     loadJsonTooltip: '파라미터 JSON 파일을 불러옵니다(ACE-Step Gradio 예제 호환).',
     exportJsonTooltip: '현재 설정을 JSON 으로 저장(공유·재사용용).',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examplesSearchPlaceholder: '예제 검색(ID, 언어, BPM…)',
+    examplesNoMatch: '검색어와 일치하는 예제가 없습니다.',
+    examplesLoadFailed: '예제 불러오기 실패',
+    loading: '불러오는 중…',
   },
   'zh-TW': {
     // Navigation
@@ -3345,6 +3365,11 @@ export const translations = {
     exportJson: '匯出 JSON',
     loadJsonTooltip: '載入參數 JSON 檔（相容 ACE-Step Gradio 範例）。',
     exportJsonTooltip: '把目前設定存成 JSON，方便分享或重複使用。',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    examplesSearchPlaceholder: '搜尋範例（編號、語言、BPM…）',
+    examplesNoMatch: '沒有符合的範例。',
+    examplesLoadFailed: '載入範例失敗',
+    loading: '載入中…',
   },
 };
 

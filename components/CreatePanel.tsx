@@ -1237,9 +1237,9 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
         <div className="space-y-2">
           <div className="flex items-center gap-2 flex-wrap">
             <ExamplesMenu
-              onPick={(preset) => {
-                applyParamsObject(preset.data);
-                handleModeChange(preset.mode);
+              onPick={(picked) => {
+                handleModeChange(picked.mode);
+                applyParamsObject(picked.data);
               }}
             />
             <Tooltip content={t('loadJsonTooltip')} placement="bottom">
