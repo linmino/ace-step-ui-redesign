@@ -660,7 +660,10 @@ export const translations = {
     basicMode: 'Basic',
     proMode: 'Pro',
     basicModeTooltip: 'Show only the most common parameters for fast generation.',
-    proModeTooltip: 'Show all advanced sections (LM / Diffusion / LoRA / Output).',},
+    proModeTooltip: 'Show all advanced sections (LM / Diffusion / LoRA / Output).',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    dragToResize: 'Drag to resize · Double-click to reset',
+  },
   zh: {
     // Navigation
     create: '创作',
@@ -1320,7 +1323,10 @@ export const translations = {
     basicMode: '基础',
     proMode: '专业',
     basicModeTooltip: '仅显示最常用参数，便于快速生成。',
-    proModeTooltip: '显示全部高级区段（LM / 扩散 / LoRA / 输出）。',},
+    proModeTooltip: '显示全部高级区段（LM / 扩散 / LoRA / 输出）。',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    dragToResize: '拖动调整宽度 · 双击重置',
+  },
   ja: {
     // Navigation
     create: '作成',
@@ -1980,7 +1986,10 @@ export const translations = {
     basicMode: 'ベーシック',
     proMode: 'プロ',
     basicModeTooltip: '最も使う基本パラメータのみ表示し、素早く生成します。',
-    proModeTooltip: '高度な全セクションを表示（LM / 拡散 / LoRA / 出力）。',},
+    proModeTooltip: '高度な全セクションを表示（LM / 拡散 / LoRA / 出力）。',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    dragToResize: 'ドラッグで幅調整・ダブルクリックでリセット',
+  },
   ko: {
     // Navigation
     create: '생성',
@@ -2635,7 +2644,10 @@ export const translations = {
     basicMode: '기본',
     proMode: '프로',
     basicModeTooltip: '가장 자주 쓰는 기본 파라미터만 표시해 빠르게 생성합니다.',
-    proModeTooltip: '모든 고급 섹션을 표시(LM / 디퓨전 / LoRA / 출력).',},
+    proModeTooltip: '모든 고급 섹션을 표시(LM / 디퓨전 / LoRA / 출력).',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    dragToResize: '드래그로 너비 조절 · 더블클릭으로 초기화',
+  },
   'zh-TW': {
     // Navigation
     create: '創作',
@@ -3295,7 +3307,10 @@ export const translations = {
     basicMode: '基礎',
     proMode: '專業',
     basicModeTooltip: '僅顯示最常用參數，便於快速生成。',
-    proModeTooltip: '顯示全部進階區段（LM / 擴散 / LoRA / 輸出）。',},
+    proModeTooltip: '顯示全部進階區段（LM / 擴散 / LoRA / 輸出）。',
+    // Phase 1.4: mode labels & hints (auto-generated)
+    dragToResize: '拖曳調整寬度 · 雙擊還原',
+  },
 };
 
 export type TranslationKey = keyof typeof translations.en;

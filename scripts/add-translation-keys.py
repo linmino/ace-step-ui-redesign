@@ -432,6 +432,13 @@ UI_ENTRIES: list[tuple[str, dict[str, str]]] = [
         "ja": "高度な全セクションを表示（LM / 拡散 / LoRA / 出力）。",
         "ko": "모든 고급 섹션을 표시(LM / 디퓨전 / LoRA / 출력).",
     }),
+    ("dragToResize", {
+        "en": "Drag to resize · Double-click to reset",
+        "zh": "拖动调整宽度 · 双击重置",
+        "zh-TW": "拖曳調整寬度 · 雙擊還原",
+        "ja": "ドラッグで幅調整・ダブルクリックでリセット",
+        "ko": "드래그로 너비 조절 · 더블클릭으로 초기화",
+    }),
 ]
 
 ALL_ENTRIES = MODE_ENTRIES + HINT_ENTRIES + UI_ENTRIES

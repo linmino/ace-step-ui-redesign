@@ -84,6 +84,46 @@ function AppContent() {
   useEffect(() => {
     localStorage.setItem('ace-workspace-mode', showRightSidebar ? 'expanded' : 'collapsed');
   }, [showRightSidebar]);
+  // CreatePanel ⇄ SongList resizable divider. Default scales with viewport.
+  const defaultCreatePanelWidth = (): number => {
+    if (typeof window === 'undefined') return 620;
+    const vw = window.innerWidth;
+    if (vw >= 1536) return 720;
+    if (vw >= 1280) return 620;
+    if (vw >= 1024) return 540;
+    return 480;
+  };
+  const [createPanelWidth, setCreatePanelWidth] = useState<number>(() => {
+    const stored = localStorage.getItem('ace-create-panel-width');
+    const n = stored ? Number(stored) : NaN;
+    return Number.isFinite(n) && n >= 360 && n <= 1200 ? n : defaultCreatePanelWidth();
+  });
+  useEffect(() => {
+    localStorage.setItem('ace-create-panel-width', String(createPanelWidth));
+  }, [createPanelWidth]);
+  const startResizingCreatePanel = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startWidth = createPanelWidth;
+    const onMove = (ev: MouseEvent) => {
+      const delta = ev.clientX - startX;
+      const next = Math.max(360, Math.min(1200, startWidth + delta));
+      setCreatePanelWidth(next);
+    };
+    const onUp = () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+  }, [createPanelWidth]);
+  const resetCreatePanelWidth = useCallback(() => {
+    setCreatePanelWidth(defaultCreatePanelWidth());
+  }, []);
   const [showLeftSidebar, setShowLeftSidebar] = useState(true);
   const [pendingAudioSelection, setPendingAudioSelection] = useState<{ target: 'reference' | 'source'; url: string; title?: string } | null>(null);
 
@@ -1310,11 +1350,14 @@ function AppContent() {
       default:
         return (
           <div className="flex h-full overflow-hidden relative w-full">
-            {/* Create Panel */}
-            <div className={`
-              ${mobileShowList ? 'hidden md:block' : 'w-full'}
-              md:w-[480px] lg:w-[540px] xl:w-[620px] 2xl:w-[720px] flex-shrink-0 h-full border-r border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-suno-panel relative z-10 transition-colors duration-300
-            `}>
+            {/* Create Panel — width is user-resizable on md+ via the divider below */}
+            <div
+              style={{ width: mobileShowList ? undefined : createPanelWidth }}
+              className={`
+                ${mobileShowList ? 'hidden md:block' : 'w-full md:w-auto'}
+                flex-shrink-0 h-full bg-zinc-50 dark:bg-suno-panel relative z-10 transition-colors duration-300
+              `}
+            >
               <CreatePanel
                 onGenerate={handleGenerate}
                 isGenerating={isGenerating}
@@ -1323,6 +1366,19 @@ function AppContent() {
                 pendingAudioSelection={pendingAudioSelection}
                 onAudioSelectionApplied={() => setPendingAudioSelection(null)}
               />
+            </div>
+
+            {/* Resizable divider — drag to adjust split, double-click to reset */}
+            <div
+              onMouseDown={startResizingCreatePanel}
+              onDoubleClick={resetCreatePanelWidth}
+              role="separator"
+              aria-orientation="vertical"
+              aria-label={t('dragToResize')}
+              title={t('dragToResize')}
+              className="hidden md:flex group w-1 hover:w-1.5 cursor-col-resize bg-zinc-200 dark:bg-white/5 hover:bg-pink-500/60 active:bg-pink-500 transition-all flex-shrink-0 items-center justify-center relative"
+            >
+              <div className="absolute inset-y-0 -inset-x-2 group-hover:bg-pink-500/10" />
             </div>
 
             {/* Song List — capped + centered so ultrawide screens don't waste it */}
