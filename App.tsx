@@ -1313,7 +1313,7 @@ function AppContent() {
             {/* Create Panel */}
             <div className={`
               ${mobileShowList ? 'hidden md:block' : 'w-full'}
-              md:w-[480px] lg:w-[520px] flex-shrink-0 h-full border-r border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-suno-panel relative z-10 transition-colors duration-300
+              md:w-[480px] lg:w-[540px] xl:w-[620px] 2xl:w-[720px] flex-shrink-0 h-full border-r border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-suno-panel relative z-10 transition-colors duration-300
             `}>
               <CreatePanel
                 onGenerate={handleGenerate}
@@ -1325,10 +1325,11 @@ function AppContent() {
               />
             </div>
 
-            {/* Song List */}
+            {/* Song List — capped + centered so ultrawide screens don't waste it */}
             <div className={`
               ${!mobileShowList ? 'hidden md:flex' : 'flex'}
               flex-1 flex-col h-full overflow-hidden bg-white dark:bg-suno-DEFAULT transition-colors duration-300
+              min-w-0 max-w-[1280px] 2xl:max-w-[1440px] mx-auto w-full
             `}>
               <SongList
                 songs={songs}

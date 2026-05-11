@@ -23,7 +23,7 @@ export const ModeTabs: React.FC<ModeTabsProps> = ({ current, onChange, disabled 
     const { t } = useI18n();
 
     return (
-        <div className="bg-zinc-100/70 dark:bg-black/30 rounded-xl p-1 flex items-center gap-1 overflow-x-auto custom-scrollbar">
+        <div className="bg-zinc-100/70 dark:bg-black/30 rounded-xl p-1 flex flex-wrap items-center gap-1">
             {MODE_ORDER.map((mode) => {
                 const cfg = MODE_CONFIGS[mode];
                 const Icon = ICON_MAP[cfg.icon];
@@ -37,7 +37,7 @@ export const ModeTabs: React.FC<ModeTabsProps> = ({ current, onChange, disabled 
                         aria-pressed={active}
                         title={t(cfg.descKey)}
                         className={`
-                            flex-shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all
+                            flex-shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-semibold transition-all
                             ${active
                                 ? 'bg-white text-pink-600 shadow-sm dark:bg-suno-card dark:text-pink-400'
                                 : 'text-zinc-500 hover:text-zinc-900 hover:bg-white/60 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-white/5'
@@ -45,7 +45,7 @@ export const ModeTabs: React.FC<ModeTabsProps> = ({ current, onChange, disabled 
                             ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
                         `}
                     >
-                        <Icon size={13} />
+                        <Icon size={12} />
                         <span>{t(cfg.labelKey)}</span>
                     </button>
                 );
