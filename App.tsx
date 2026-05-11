@@ -23,6 +23,7 @@ import { Toast, ToastType } from './components/Toast';
 import { SearchPage } from './components/SearchPage';
 import { TrainingPanel } from './components/TrainingPanel';
 import { NewsPage } from './components/NewsPage';
+import { DocsPage } from './components/DocsPage';
 import { ConfirmDialog } from './components/ConfirmDialog';
 
 
@@ -335,6 +336,8 @@ function AppContent() {
         setCurrentView('search');
       } else if (path === '/news') {
         setCurrentView('news');
+      } else if (path === '/docs') {
+        setCurrentView('docs');
       }
     };
 
@@ -1346,6 +1349,9 @@ function AppContent() {
       case 'news':
         return <NewsPage />;
 
+      case 'docs':
+        return <DocsPage />;
+
       case 'create':
       default:
         return (
@@ -1467,6 +1473,8 @@ function AppContent() {
               window.history.pushState({}, '', '/search');
             } else if (v === 'news') {
               window.history.pushState({}, '', '/news');
+            } else if (v === 'docs') {
+              window.history.pushState({}, '', '/docs');
             }
             if (isMobile) setShowLeftSidebar(false);
           }}

@@ -8,6 +8,12 @@ export const translations = {
     search: 'Search',
     training: 'Training',
     news: 'News',
+    docs: 'Docs',
+    docsSearchPlaceholder: 'Search docs…',
+    docsNoMatch: 'No docs match your search.',
+    docsSelect: 'Select a doc on the left to start reading.',
+    docsShowList: 'Show list',
+    docsHideList: 'Hide list',
 
     // Theme
     lightMode: 'Light Mode',
@@ -683,6 +689,12 @@ export const translations = {
     search: '搜索',
     training: '训练',
     news: '新闻',
+    docs: '文档',
+    docsSearchPlaceholder: '搜索文档…',
+    docsNoMatch: '没有匹配的文档。',
+    docsSelect: '从左侧选择一份文档开始阅读。',
+    docsShowList: '显示列表',
+    docsHideList: '隐藏列表',
 
     // Theme
     lightMode: '浅色模式',
@@ -1358,6 +1370,12 @@ export const translations = {
     search: '検索',
     training: 'トレーニング',
     news: 'ニュース',
+    docs: 'ドキュメント',
+    docsSearchPlaceholder: 'ドキュメント検索…',
+    docsNoMatch: '一致するドキュメントがありません。',
+    docsSelect: '左から読みたいドキュメントを選んでください。',
+    docsShowList: 'リストを表示',
+    docsHideList: 'リストを隠す',
 
     // Theme
     lightMode: 'ライトモード',
@@ -2033,6 +2051,12 @@ export const translations = {
     search: '검색',
     training: '훈련',
     news: '뉴스',
+    docs: '문서',
+    docsSearchPlaceholder: '문서 검색…',
+    docsNoMatch: '검색어와 일치하는 문서가 없습니다.',
+    docsSelect: '왼쪽에서 문서를 선택해 읽기를 시작하세요.',
+    docsShowList: '목록 표시',
+    docsHideList: '목록 숨기기',
 
     // Theme
     lightMode: '라이트 모드',
@@ -2703,6 +2727,12 @@ export const translations = {
     search: '搜尋',
     training: '訓練',
     news: '新聞',
+    docs: '說明',
+    docsSearchPlaceholder: '搜尋說明…',
+    docsNoMatch: '沒有符合的說明。',
+    docsSelect: '從左側選擇一份說明開始閱讀。',
+    docsShowList: '顯示列表',
+    docsHideList: '隱藏列表',
 
     // Theme
     lightMode: '淺色模式',

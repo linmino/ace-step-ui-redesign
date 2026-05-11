@@ -10,3 +10,9 @@ declare module '*.txt?raw' {
   const content: string;
   export default content;
 }
+
+// Bundled Markdown docs imported as raw strings (see components/DocsPage.tsx).
+declare module '*.md?raw' {
+  const content: string;
+  export default content;
+}

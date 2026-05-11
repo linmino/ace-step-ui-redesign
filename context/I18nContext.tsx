@@ -13,7 +13,7 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [language, setLanguage] = useState<Language>(() => {
     const stored = localStorage.getItem('language') as Language;
     const valid: Language[] = ['en', 'zh', 'zh-TW', 'ja', 'ko'];
-    return valid.includes(stored) ? stored : 'en';
+    return valid.includes(stored) ? stored : 'zh-TW';
   });
 
   const handleSetLanguage = (lang: Language) => {
