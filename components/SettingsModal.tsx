@@ -4,6 +4,16 @@ import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../context/I18nContext';
 import { EditProfileModal } from './EditProfileModal';
 
+const localeForDate = (lang: string): string => {
+    switch (lang) {
+        case 'zh': return 'zh-CN';
+        case 'zh-TW': return 'zh-TW';
+        case 'ja': return 'ja-JP';
+        case 'ko': return 'ko-KR';
+        default: return 'en-US';
+    }
+};
+
 interface SettingsModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -74,7 +84,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, t
                             <div className="flex-1">
                                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white">@{user.username}</h3>
                                 <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
-                                    {t('memberSince')} {new Date(user.createdAt).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', year: 'numeric' })}
+                                    {t('memberSince')} {new Date(user.createdAt).toLocaleDateString(localeForDate(language), { month: 'long', year: 'numeric' })}
                                 </p>
                             </div>
                             <div className="flex gap-2">
@@ -163,11 +173,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, t
                             <div className="relative">
                                 <select
                                     value={language}
-                                    onChange={(e) => setLanguage(e.target.value as 'en' | 'zh' | 'ja' | 'ko')}
+                                    onChange={(e) => setLanguage(e.target.value as 'en' | 'zh' | 'zh-TW' | 'ja' | 'ko')}
                                     className="w-full appearance-none py-3 px-4 pr-10 rounded-lg border-2 border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium transition-colors hover:border-zinc-400 dark:hover:border-zinc-600 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 cursor-pointer"
                                 >
                                     <option value="en">{t('english')}</option>
                                     <option value="zh">{t('chinese')}</option>
+                                    <option value="zh-TW">{t('traditionalChinese')}</option>
                                     <option value="ja">{t('japaneseLanguage')}</option>
                                     <option value="ko">{t('koreanLanguage')}</option>
                                 </select>
