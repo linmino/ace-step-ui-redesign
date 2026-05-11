@@ -6,6 +6,8 @@ import { useI18n } from '../context/I18nContext';
 import { generateApi } from '../services/api';
 import { MAIN_STYLES } from '../data/genres';
 import { EditableSlider } from './EditableSlider';
+import { LoraSection } from './create/sections/LoraSection';
+import { AdvancedSection } from './create/sections/AdvancedSection';
 
 interface ReferenceTrack {
   id: string;
@@ -1738,96 +1740,22 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
           )}
         </div>
 
-        {/* LORA CONTROL PANEL */}
+        {/* LORA CONTROL PANEL — extracted in Phase 3 */}
         {customMode && (
-          <>
-            <button
-              onClick={() => setShowLoraPanel(!showLoraPanel)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-suno-card rounded-xl border border-zinc-200 dark:border-white/5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <Sliders size={16} className="text-zinc-500" />
-                <span>LoRA</span>
-              </div>
-              <ChevronDown size={16} className={`text-zinc-500 transition-transform ${showLoraPanel ? 'rotate-180' : ''}`} />
-            </button>
-
-            {showLoraPanel && (
-              <div className="bg-white dark:bg-suno-card rounded-xl border border-zinc-200 dark:border-white/5 p-4 space-y-4">
-                {/* LoRA Path Input */}
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t('loraPath')}</label>
-                  <input
-                    type="text"
-                    value={loraPath}
-                    onChange={(e) => setLoraPath(e.target.value)}
-                    placeholder={t('loraPathPlaceholder')}
-                    className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-pink-500 dark:focus:border-pink-500 transition-colors"
-                  />
-                </div>
-
-                {/* LoRA Load/Unload Toggle */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between py-2 border-t border-zinc-100 dark:border-white/5">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        loraLoaded ? 'bg-green-500 animate-pulse' : 'bg-red-500'
-                      }`}></div>
-                      <span className={`text-xs font-medium ${
-                        loraLoaded ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                      }`}>
-                        {loraLoaded ? t('loraLoaded') : t('loraUnloaded')}
-                      </span>
-                    </div>
-                    <button
-                      onClick={handleLoraToggle}
-                      disabled={!loraPath.trim() || isLoraLoading}
-                      className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
-                        loraLoaded
-                          ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/20 hover:from-green-600 hover:to-emerald-700'
-                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
-                      }`}
-                    >
-                      {isLoraLoading ? '...' : (loraLoaded ? t('loraUnload') : t('loraLoad'))}
-                    </button>
-                  </div>
-                  {loraError && (
-                    <div className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded">
-                      {loraError}
-                    </div>
-                  )}
-                </div>
-
-                {/* Use LoRA Checkbox (enable/disable without unloading) */}
-                <div className={`flex items-center justify-between py-2 border-t border-zinc-100 dark:border-white/5 ${!loraLoaded ? 'opacity-40 pointer-events-none' : ''}`}>
-                  <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={loraEnabled}
-                      onChange={handleLoraEnabledToggle}
-                      disabled={!loraLoaded}
-                      className="accent-pink-600"
-                    />
-                    Use LoRA
-                  </label>
-                </div>
-
-                {/* LoRA Scale Slider */}
-                <div className={!loraLoaded || !loraEnabled ? 'opacity-40 pointer-events-none' : ''}>
-                  <EditableSlider
-                    label={t('loraScale')}
-                    value={loraScale}
-                    min={0}
-                    max={1}
-                    step={0.05}
-                    onChange={handleLoraScaleChange}
-                    formatDisplay={(val) => val.toFixed(2)}
-                    helpText={t('loraScaleDescription')}
-                  />
-                </div>
-              </div>
-            )}
-          </>
+          <LoraSection
+            showLoraPanel={showLoraPanel}
+            setShowLoraPanel={setShowLoraPanel}
+            loraPath={loraPath}
+            setLoraPath={setLoraPath}
+            loraLoaded={loraLoaded}
+            loraEnabled={loraEnabled}
+            loraScale={loraScale}
+            loraError={loraError}
+            isLoraLoading={isLoraLoading}
+            onToggle={handleLoraToggle}
+            onEnabledToggle={handleLoraEnabledToggle}
+            onScaleChange={handleLoraScaleChange}
+          />
         )}
 
         {/* MUSIC PARAMETERS */}
@@ -1880,7 +1808,37 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
           </div>
         </div>
 
-        {/* ADVANCED SETTINGS */}
+        {/* ADVANCED SETTINGS — extracted in Phase 3 */}
+        <AdvancedSection
+          state={{
+            showAdvanced, showLmParams,
+            duration, batchSize, bulkCount, inferenceSteps, guidanceScale,
+            audioFormat, inferMethod, randomSeed, seed, shift,
+            lmBackend, lmModel, lmTemperature, lmCfgScale, lmTopK, lmTopP, lmNegativePrompt, thinking,
+            cfgIntervalStart, cfgIntervalEnd, customTimesteps, useAdg,
+            audioCodes, sourceAudioUrl, taskType, audioCoverStrength, repaintingStart, repaintingEnd, instruction,
+            scoreScale, lmBatchChunkSize,
+            trackName, completeTrackClasses,
+            autogen, allowLmBatch, constrainedDecodingDebug, useCotMetas, useCotCaption, useCotLanguage,
+            isFormatCaption, getScores, getLrc,
+            loraLoaded, selectedModel, uploadError,
+          }}
+          set={{
+            setShowAdvanced, setShowLmParams,
+            setDuration, setBatchSize, setBulkCount, setInferenceSteps, setGuidanceScale,
+            setAudioFormat, setInferMethod, setRandomSeed, setSeed, setShift,
+            setLmBackend, setLmModel, setLmTemperature, setLmCfgScale, setLmTopK, setLmTopP, setLmNegativePrompt, setThinking,
+            setCfgIntervalStart, setCfgIntervalEnd, setCustomTimesteps, setUseAdg,
+            setAudioCodes, setTaskType, setAudioCoverStrength, setRepaintingStart, setRepaintingEnd, setInstruction,
+            setScoreScale, setLmBatchChunkSize,
+            setTrackName, setCompleteTrackClasses,
+            setAutogen, setAllowLmBatch, setConstrainedDecodingDebug, setUseCotMetas, setUseCotCaption, setUseCotLanguage,
+            setIsFormatCaption, setGetScores, setGetLrc,
+            handleLoadParamsFile, isTurboModel,
+          }}
+        />
+        {/* OLD ADVANCED BUTTON REMOVED: replaced by AdvancedSection component */}
+        {false && (
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-suno-card rounded-xl border border-zinc-200 dark:border-white/5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors"
@@ -1890,552 +1848,8 @@ export const CreatePanel: React.FC<CreatePanelProps> = ({
             <span>{t('advancedSettings')}</span>
           </div>
           <ChevronDown size={16} className={`text-zinc-500 transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
-        </button>
+        </button>)}
 
-        {showAdvanced && (
-          <div className="bg-white dark:bg-suno-card rounded-xl border border-zinc-200 dark:border-white/5 p-4 space-y-4">
-            {/* Load Parameters from JSON */}
-            <label className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-zinc-300 dark:border-white/15 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
-              <Upload size={14} />
-              Load Parameters (JSON)
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleLoadParamsFile}
-                className="hidden"
-              />
-            </label>
-
-            {/* Duration */}
-            <EditableSlider
-              label={t('duration')}
-              value={duration}
-              min={-1}
-              max={600}
-              step={5}
-              onChange={setDuration}
-              formatDisplay={(val) => val === -1 ? t('auto') : `${val}${t('seconds')}`}
-              autoLabel={t('auto')}
-              helpText={`${t('auto')} - 10 ${t('min')}`}
-            />
-
-            {/* Batch Size */}
-            <EditableSlider
-              label={t('batchSize')}
-              value={batchSize}
-              min={1}
-              max={4}
-              step={1}
-              onChange={setBatchSize}
-              helpText={t('numberOfVariations')}
-              title="Creates multiple variations in a single run. More variations = longer total time."
-            />
-
-            {/* Bulk Generate */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t('bulkGenerate')}</label>
-                <span className="text-xs font-mono text-zinc-900 dark:text-white bg-zinc-100 dark:bg-black/20 px-2 py-0.5 rounded">
-                  {bulkCount} {t(bulkCount === 1 ? 'job' : 'jobs')}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 5, 10].map((count) => (
-                  <button
-                    key={count}
-                    onClick={() => { setBulkCount(count); localStorage.setItem('ace-bulkCount', String(count)); }}
-                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
-                      bulkCount === count
-                        ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-md'
-                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
-                    }`}
-                  >
-                    {count}
-                  </button>
-                ))}
-              </div>
-              <p className="text-[10px] text-zinc-500">{t('queueMultipleJobs')}</p>
-            </div>
-
-            {/* Inference Steps */}
-            <EditableSlider
-              label={t('inferenceSteps')}
-              value={inferenceSteps}
-              min={1}
-              max={isTurboModel(selectedModel) ? 20 : 200}
-              step={1}
-              onChange={setInferenceSteps}
-              helpText={t('moreStepsBetterQuality')}
-              title="More steps usually improves quality but slows generation."
-            />
-
-            {/* Guidance Scale */}
-            <EditableSlider
-              label={t('guidanceScale')}
-              value={guidanceScale}
-              min={1}
-              max={15}
-              step={0.1}
-              onChange={setGuidanceScale}
-              formatDisplay={(val) => val.toFixed(1)}
-              helpText={t('howCloselyFollowPrompt')}
-              title="How strongly the model follows the prompt. Higher = stricter, lower = freer."
-            />
-
-            {/* Audio Format & Inference Method */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t('audioFormat')}</label>
-                <select
-                  value={audioFormat}
-                  onChange={(e) => setAudioFormat(e.target.value as 'mp3' | 'flac')}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-2 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-500 transition-colors cursor-pointer [&>option]:bg-white [&>option]:dark:bg-zinc-800 [&>option]:text-zinc-900 [&>option]:dark:text-white"
-                >
-                  <option value="mp3">{t('mp3Smaller')}</option>
-                  <option value="flac">{t('flacLossless')}</option>
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Deterministic is more repeatable; stochastic adds randomness.">{t('inferMethod')}</label>
-                <select
-                  value={inferMethod}
-                  onChange={(e) => setInferMethod(e.target.value as 'ode' | 'sde')}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-2 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-500 transition-colors cursor-pointer [&>option]:bg-white [&>option]:dark:bg-zinc-800 [&>option]:text-zinc-900 [&>option]:dark:text-white"
-                >
-                  <option value="ode">{t('odeDeterministic')}</option>
-                  <option value="sde">{t('sdeStochastic')}</option>
-                </select>
-              </div>
-            </div>
-
-            {/* LM Backend */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t('lmBackendLabel')}</label>
-              <select
-                value={lmBackend}
-                onChange={(e) => setLmBackend(e.target.value as 'pt' | 'vllm')}
-                className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none"
-              >
-                <option value="pt">{t('lmBackendPt')}</option>
-                <option value="vllm">{t('lmBackendVllm')}</option>
-              </select>
-              <p className="text-[10px] text-zinc-500">{t('lmBackendHint')}</p>
-            </div>
-
-            {/* LM Model */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t('lmModelLabel')}</label>
-              <select
-                value={lmModel}
-                onChange={(e) => { const v = e.target.value; setLmModel(v); localStorage.setItem('ace-lmModel', v); }}
-                className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none"
-              >
-                <option value="acestep-5Hz-lm-0.6B">{t('lmModel06B')}</option>
-                <option value="acestep-5Hz-lm-1.7B">{t('lmModel17B')}</option>
-                <option value="acestep-5Hz-lm-4B">{t('lmModel4B')}</option>
-              </select>
-              <p className="text-[10px] text-zinc-500">{t('lmModelHint')}</p>
-            </div>
-
-            {/* Seed */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Dices size={14} className="text-zinc-500" />
-                  <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Fixing the seed makes results repeatable. Random is recommended for variety.">{t('seed')}</span>
-                </div>
-                <button
-                  onClick={() => setRandomSeed(!randomSeed)}
-                  className={`w-10 h-5 rounded-full flex items-center transition-colors duration-200 px-0.5 border border-zinc-200 dark:border-white/5 ${randomSeed ? 'bg-pink-600' : 'bg-zinc-300 dark:bg-black/40'}`}
-                >
-                  <div className={`w-4 h-4 rounded-full bg-white transform transition-transform duration-200 shadow-sm ${randomSeed ? 'translate-x-5' : 'translate-x-0'}`} />
-                </button>
-              </div>
-              <div className="flex items-center gap-2">
-                <Hash size={14} className="text-zinc-500" />
-                <input
-                  type="number"
-                  value={seed}
-                  onChange={(e) => setSeed(Number(e.target.value))}
-                  placeholder={t('enterFixedSeed')}
-                  disabled={randomSeed}
-                  className={`flex-1 bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none ${randomSeed ? 'opacity-40 cursor-not-allowed' : ''}`}
-                />
-              </div>
-              <p className="text-[10px] text-zinc-500">{randomSeed ? t('randomSeedRecommended') : t('fixedSeedReproducible')}</p>
-            </div>
-
-            {/* Thinking Toggle */}
-            <div className="flex items-center justify-between py-2 border-t border-zinc-100 dark:border-white/5">
-              <span className={`text-xs font-medium ${loraLoaded ? 'text-zinc-400 dark:text-zinc-600' : 'text-zinc-600 dark:text-zinc-400'}`} title="Lets the lyric model reason about structure and metadata. Slightly slower.">{t('thinkingCot')}</span>
-              <button
-                onClick={() => !loraLoaded && setThinking(!thinking)}
-                disabled={loraLoaded}
-                className={`w-10 h-5 rounded-full flex items-center transition-colors duration-200 px-0.5 border border-zinc-200 dark:border-white/5 ${thinking ? 'bg-pink-600' : 'bg-zinc-300 dark:bg-black/40'} ${loraLoaded ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-              >
-                <div className={`w-4 h-4 rounded-full bg-white transform transition-transform duration-200 shadow-sm ${thinking ? 'translate-x-5' : 'translate-x-0'}`} />
-              </button>
-            </div>
-
-            {/* Shift */}
-            <EditableSlider
-              label={t('shift')}
-              value={shift}
-              min={1}
-              max={5}
-              step={0.1}
-              onChange={setShift}
-              formatDisplay={(val) => val.toFixed(1)}
-              helpText={t('timestepShiftForBase')}
-              title="Adjusts the diffusion schedule. Only affects base model."
-            />
-
-            {/* Divider */}
-            <div className="border-t border-zinc-200 dark:border-white/10 pt-4">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-wide font-bold mb-3">{t('expertControls')}</p>
-            </div>
-
-            {uploadError && (
-              <div className="text-[11px] text-rose-500">{uploadError}</div>
-            )}
-
-            {/* LM Parameters */}
-            <button
-              onClick={() => setShowLmParams(!showLmParams)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-white/60 dark:bg-black/20 rounded-xl border border-zinc-200/70 dark:border-white/10 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <Music2 size={16} className="text-zinc-500" />
-                <div className="flex flex-col items-start">
-                  <span title="Controls the 5Hz lyric/caption model sampling behavior.">{t('lmParameters')}</span>
-                  <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-normal">{t('controlLyricGeneration')}</span>
-                </div>
-              </div>
-              <ChevronDown size={16} className={`text-zinc-500 transition-transform ${showLmParams ? 'rotate-180' : ''}`} />
-            </button>
-
-            {showLmParams && (
-              <div className="bg-white dark:bg-suno-card rounded-xl border border-zinc-200 dark:border-white/5 p-4 space-y-4">
-                {/* LM Temperature */}
-                <EditableSlider
-                  label={t('lmTemperature')}
-                  value={lmTemperature}
-                  min={0}
-                  max={2}
-                  step={0.1}
-                  onChange={setLmTemperature}
-                  formatDisplay={(val) => val.toFixed(2)}
-                  helpText={t('higherMoreRandom')}
-                  title="Higher temperature = more random word choices."
-                />
-
-                {/* LM CFG Scale */}
-                <EditableSlider
-                  label={t('lmCfgScale')}
-                  value={lmCfgScale}
-                  min={1}
-                  max={3}
-                  step={0.1}
-                  onChange={setLmCfgScale}
-                  formatDisplay={(val) => val.toFixed(1)}
-                  helpText={t('noCfgScale')}
-                  title="How strongly the lyric model follows the prompt."
-                />
-
-                {/* LM Top-K & Top-P */}
-                <div className="grid grid-cols-2 gap-3">
-                  <EditableSlider
-                    label={t('topK')}
-                    value={lmTopK}
-                    min={0}
-                    max={100}
-                    step={1}
-                    onChange={setLmTopK}
-                    title="Restricts choices to the K most likely tokens. 0 disables."
-                  />
-                  <EditableSlider
-                    label={t('topP')}
-                    value={lmTopP}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    onChange={setLmTopP}
-                    formatDisplay={(val) => val.toFixed(2)}
-                    title="Samples from the smallest set whose total probability is P."
-                  />
-                </div>
-
-                {/* LM Negative Prompt */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Words or ideas to steer the lyric model away from.">{t('lmNegativePrompt')}</label>
-                  <textarea
-                    value={lmNegativePrompt}
-                    onChange={(e) => setLmNegativePrompt(e.target.value)}
-                    placeholder={t('thingsToAvoid')}
-                    className="w-full h-16 bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg p-2 text-xs text-zinc-900 dark:text-white focus:outline-none resize-none"
-                  />
-                  <p className="text-[10px] text-zinc-500">{t('useWhenCfgScaleGreater')}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-1">
-              <h4 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide" title="Controls how much the output follows the input audio.">{t('transform')}</h4>
-              <p className="text-[11px] text-zinc-400 dark:text-zinc-500">{t('controlSourceAudio')}</p>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Advanced: precomputed audio codes for conditioning.">{t('audioCodes')}</label>
-              <textarea
-                value={audioCodes}
-                onChange={(e) => setAudioCodes(e.target.value)}
-                placeholder={t('optionalAudioCodes')}
-                className="w-full h-16 bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg p-2 text-xs text-zinc-900 dark:text-white focus:outline-none resize-none"
-              />
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    // Convert source audio to LM codes — requires Gradio lambda (not exposed as API)
-                    // This is a placeholder: Gradio's convert_src_audio_to_codes_wrapper is not a named endpoint
-                    console.log('Convert to Codes: requires source audio upload. Use Gradio UI for this feature.');
-                  }}
-                  disabled={!sourceAudioUrl}
-                  title="Convert source audio to LM codes (requires source audio)"
-                  className="px-2 py-1 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  Convert to Codes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    // Transcribe audio codes to metadata — requires Gradio lambda (not exposed as API)
-                    console.log('Transcribe: requires audio codes. Use Gradio UI for this feature.');
-                  }}
-                  disabled={!audioCodes.trim()}
-                  title="Transcribe audio codes to metadata (requires audio codes)"
-                  className="px-2 py-1 rounded text-[10px] font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  Transcribe
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Choose text-to-music or audio-based modes.">{t('taskType')}</label>
-                <select
-                  value={taskType}
-                  onChange={(e) => setTaskType(e.target.value)}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-2 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-pink-500 dark:focus:border-pink-500 transition-colors cursor-pointer [&>option]:bg-white [&>option]:dark:bg-zinc-800 [&>option]:text-zinc-900 [&>option]:dark:text-white"
-                >
-                  <option value="text2music">{t('textToMusic')}</option>
-                  <option value="audio2audio">{t('audio2audio')}</option>
-                  <option value="cover">{t('coverTask')}</option>
-                  <option value="repaint">{t('repaintTask')}</option>
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="How strongly the source audio shapes the result.">{t('audioCoverStrength')}</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="1"
-                  value={audioCoverStrength}
-                  onChange={(e) => setAudioCoverStrength(Number(e.target.value))}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Start time for the region to repaint (seconds).">{t('repaintingStart')}</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={repaintingStart}
-                  onChange={(e) => setRepaintingStart(Number(e.target.value))}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="End time for the region to repaint (seconds).">{t('repaintingEnd')}</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={repaintingEnd}
-                  onChange={(e) => setRepaintingEnd(Number(e.target.value))}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Additional directives to guide generation.">{t('instruction')}</label>
-              <textarea
-                value={instruction}
-                onChange={(e) => setInstruction(e.target.value)}
-                className="w-full h-16 bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg p-2 text-xs text-zinc-900 dark:text-white focus:outline-none resize-none"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <h4 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">{t('guidance')}</h4>
-              <p className="text-[11px] text-zinc-400 dark:text-zinc-500">{t('advancedCfgScheduling')}</p>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Fraction of the diffusion process to start applying guidance.">{t('cfgIntervalStart')}</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="1"
-                  value={cfgIntervalStart}
-                  onChange={(e) => setCfgIntervalStart(Number(e.target.value))}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Fraction of the diffusion process to stop applying guidance.">{t('cfgIntervalEnd')}</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="1"
-                  value={cfgIntervalEnd}
-                  onChange={(e) => setCfgIntervalEnd(Number(e.target.value))}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Override the default timestep schedule (advanced).">{t('customTimesteps')}</label>
-              <input
-                type="text"
-                value={customTimesteps}
-                onChange={(e) => setCustomTimesteps(e.target.value)}
-                placeholder={t('timestepsPlaceholder')}
-                className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Scales score-based guidance (advanced).">{t('scoreScale')}</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  max="1"
-                  value={scoreScale}
-                  onChange={(e) => setScoreScale(Number(e.target.value))}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Bigger chunks can be faster but use more memory.">{t('lmBatchChunkSize')}</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="32"
-                  step="1"
-                  value={lmBatchChunkSize}
-                  onChange={(e) => setLmBatchChunkSize(Number(e.target.value))}
-                  className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t('trackName')}</label>
-              <select
-                value={trackName}
-                onChange={(e) => setTrackName(e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none cursor-pointer [&>option]:bg-white [&>option]:dark:bg-zinc-800"
-              >
-                <option value="">None</option>
-                {TRACK_NAMES.map(name => (
-                  <option key={name} value={name}>{name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{t('completeTrackClasses')}</label>
-              <div className="flex flex-wrap gap-2">
-                {TRACK_NAMES.map(name => {
-                  const selected = completeTrackClasses.split(',').map(s => s.trim()).filter(Boolean);
-                  const isChecked = selected.includes(name);
-                  return (
-                    <label key={name} className="flex items-center gap-1 text-[10px] font-medium text-zinc-500 dark:text-zinc-400 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => {
-                          const next = isChecked
-                            ? selected.filter(s => s !== name)
-                            : [...selected, name];
-                          setCompleteTrackClasses(next.join(','));
-                        }}
-                        className="accent-pink-600"
-                      />
-                      {name}
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <label
-                className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400"
-                title="Adaptive Dual Guidance: dynamically adjusts CFG for quality. Base model only; slower."
-              >
-                <input type="checkbox" checked={useAdg} onChange={() => setUseAdg(!useAdg)} />
-                {t('useAdg')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Allow the LM to run in larger batches for speed (more VRAM).">
-                <input type="checkbox" checked={allowLmBatch} onChange={() => setAllowLmBatch(!allowLmBatch)} />
-                {t('allowLmBatch')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Let the LM reason about metadata like BPM, key, duration.">
-                <input type="checkbox" checked={useCotMetas} onChange={() => setUseCotMetas(!useCotMetas)} />
-                {t('useCotMetas')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Let the LM reason about the caption/style text.">
-                <input type="checkbox" checked={useCotCaption} onChange={() => setUseCotCaption(!useCotCaption)} />
-                {t('useCotCaption')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Let the LM reason about language selection.">
-                <input type="checkbox" checked={useCotLanguage} onChange={() => setUseCotLanguage(!useCotLanguage)} />
-                {t('useCotLanguage')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Auto-generate missing fields when possible.">
-                <input type="checkbox" checked={autogen} onChange={() => setAutogen(!autogen)} />
-                {t('autogen')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Include debug info for constrained decoding.">
-                <input type="checkbox" checked={constrainedDecodingDebug} onChange={() => setConstrainedDecodingDebug(!constrainedDecodingDebug)} />
-                {t('constrainedDecodingDebug')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Use the formatted caption produced by the AI formatter.">
-                <input type="checkbox" checked={isFormatCaption} onChange={() => setIsFormatCaption(!isFormatCaption)} />
-                {t('formatCaption')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Return scorer outputs for diagnostics.">
-                <input type="checkbox" checked={getScores} onChange={() => setGetScores(!getScores)} />
-                {t('getScores')}
-              </label>
-              <label className="flex items-center gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400" title="Return synced lyric (LRC) output when available.">
-                <input type="checkbox" checked={getLrc} onChange={() => setGetLrc(!getLrc)} />
-                {t('getLrcLyrics')}
-              </label>
-            </div>
-          </div>
-        )}
       </div>
 
       {showAudioModal && (
